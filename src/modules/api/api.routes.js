@@ -3,7 +3,6 @@
 import express from 'express';
 
 import authController from "./auth/auth.controller.js";
-import adminController from "./admin/admin.controller.js";
 import flightsController from "./flights/flights.controller.js";
 import bookingsController from "./bookings/bookings.controller.js";
 
@@ -20,11 +19,6 @@ router
 router
     .route('/login')
     .post(authController.login)
-    .all(methodNotSupported);
-
-router
-    .route('/admin/login')
-    .post(adminController.login)
     .all(methodNotSupported);
 
 router

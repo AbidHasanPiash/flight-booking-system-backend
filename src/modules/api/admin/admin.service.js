@@ -1,14 +1,11 @@
 'use strict';
 
 import bcrypt from 'bcrypt';
-import jwt from "jsonwebtoken";
 
-import AdminsModel from "./admin.model.js";
 import configuration from "../../../configuration/configuration.js";
-import httpStatusConstants from "../../../constant/httpStatus.constants.js";
 
 import generateUniqueUsername from "../../../utilities/generateUniqueUsername.js";
-import createResponse from "../../../utilities/createResponse.js";
+import UsersModel from '../users/users.model.js';
 
 const createDefaultAdmin = async () => {
     try {
@@ -16,16 +13,17 @@ const createDefaultAdmin = async () => {
         const password = configuration.admin.password;
 
         // Check if an admin user already exists
-        const adminExists = await AdminsModel.exists({ email: email }).lean();
+        const adminExists = await UsersModel.exists({ email: email, role: "admin" }).lean();
         if (!adminExists) {
             // Hash a default password
             const hashedPassword = await bcrypt.hash(password, 10);
 
             // Create the admin user
-            const adminUser = await AdminsModel.create({
-                username: await generateUniqueUsername('admin'),
+            const adminUser = await UsersModel.create({
+                username: await generateUniqueUsername('user'),
                 email: email,
                 password: hashedPassword,
+                role: "admin"
             });
 
             if (!adminUser._id) {
@@ -41,39 +39,8 @@ const createDefaultAdmin = async () => {
     }
 };
 
-const login = async ({ email, password }) => {
-    // Check if the user exists
-    const existingUser = await AdminsModel.findOne({ email });
-    if (!existingUser) {
-        return createResponse(httpStatusConstants.UNAUTHORIZED, 'Invalid email or password.');
-    }
-
-    // Compare the provided password with the stored hashed password
-    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
-    if (!isPasswordValid) {
-        return createResponse(httpStatusConstants.UNAUTHORIZED, 'Invalid email or password.');
-    }
-
-    const data = {
-        id: existingUser._id,
-        email: existingUser.email,
-        role: existingUser.role
-    };
-
-    // Generate a JWT token for the user
-    const token = jwt.sign(data, configuration.jwt.secret, { expiresIn: '1h' });
-
-    return createResponse(httpStatusConstants.OK, 'User login successfully', {
-        email: existingUser.email,
-        username: existingUser.username,
-        role: existingUser.role,
-        token,
-    });
-};
-
 const adminService = {
-    createDefaultAdmin,
-    login,
+    createDefaultAdmin
 };
 
 export default adminService;

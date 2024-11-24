@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import AdminsModel from "../modules/api/admin/admin.model.js";
+import UsersModel from "../modules/api/users/users.model.js";
 import configuration from '../configuration/configuration.js';
 import httpStatusConstants from '../constant/httpStatus.constants.js';
 
@@ -44,7 +44,7 @@ const authenticationMiddleware = async (req, res, next) => {
         const decoded = jwt.verify(token, configuration.jwt.secret);
 
         // Check if the user exists in the database
-        const user = await AdminsModel.findById(decoded.id);
+        const user = await UsersModel.findById(decoded.id);
         if (!user) {
             const { status, message } = errorResponses.UserNotFound;
             return sendResponse(res, status, message);
