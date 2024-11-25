@@ -128,7 +128,7 @@ const getBookingByUserId = async ({ id }) => {
         return createResponse(httpStatusConstants.NOT_FOUND, 'User not found.');
     }
 
-    const bookingData = await BookingsModel.find({ _id: id });
+    const bookingData = await BookingsModel.find({ userId: id });
     if (!bookingData.length) {
         return createResponse(httpStatusConstants.NOT_FOUND, `No bookings found for user with id ${id}.`);
     }
