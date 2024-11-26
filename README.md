@@ -49,7 +49,7 @@ Before you begin, ensure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repository/flight-booking-system-backend.git
+   git clone https://github.com/AbidHasanPiash/flight-booking-system-backend.git
    ```
 
 2. Navigate to the project directory:
