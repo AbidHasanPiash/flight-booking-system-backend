@@ -8,6 +8,7 @@ import bookingsController from "./bookings/bookings.controller.js";
 
 import methodNotSupported from "../../shared/methodNotSupported.js";
 import authenticationMiddleware from "../../middleware/authentication.middleware.js";
+import profileController from './profile/profile.controller.js';
 
 const router = express.Router();
 
@@ -50,6 +51,11 @@ router
 router
     .route('/bookings/user/:id')
     .get(bookingsController.getBookingByUserId)
+    .all(methodNotSupported);
+
+router
+    .route('/profile')
+    .patch(profileController.updateProfile)
     .all(methodNotSupported);
 
 export default router;

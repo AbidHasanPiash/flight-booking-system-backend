@@ -44,6 +44,7 @@ const login = async ({ email, password }) => {
 
     // Compare the provided password with the stored hashed password
     const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+    console.log({isPasswordValid})
     if (!isPasswordValid) {
         return createResponse(httpStatusConstants.UNAUTHORIZED, 'Invalid email or password.');
     }

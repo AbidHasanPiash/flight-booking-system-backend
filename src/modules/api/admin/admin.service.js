@@ -18,6 +18,8 @@ const createDefaultAdmin = async () => {
             // Hash a default password
             const hashedPassword = await bcrypt.hash(password, 10);
 
+            console.log(hashedPassword)
+
             // Create the admin user
             const adminUser = await UsersModel.create({
                 username: await generateUniqueUsername('user'),
