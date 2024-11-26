@@ -133,10 +133,22 @@ const getBookingByUserId = async ({ id }) => {
         return createResponse(httpStatusConstants.NOT_FOUND, `No bookings found for user with id ${id}.`);
     }
 
+    // Fetch flight details for each booking
+    const updatedBookingData = await Promise.all(
+        bookingData.map(async (booking) => {
+            const flightDetails = await FlightsModel.findById(booking.flightId);
+            if (!flightDetails) {
+                console.warn(`Flight not found for flightId: ${booking.flightId}`);
+                return { ...booking.toObject(), flightDetails: null };
+            }
+            return { ...booking.toObject(), flightDetails: flightDetails.toObject() };
+        })
+    );
+
     return createResponse(
         httpStatusConstants.OK,
         `Booking with user id ${id} fetched successfully.`,
-        bookingData
+        updatedBookingData
     );
 };
 
